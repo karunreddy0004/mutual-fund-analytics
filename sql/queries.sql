@@ -1,52 +1,62 @@
--- 1 Top 5 Funds by AUM
-SELECT * FROM aum
-ORDER BY aum DESC
+-- 1 Top 5 funds by AUM
+SELECT *
+FROM aum_by_fund_house
+ORDER BY aum_crore DESC
 LIMIT 5;
 
 -- 2 Average NAV
-SELECT AVG(nav) FROM nav_history;
-
--- 3 Monthly Average NAV
 SELECT strftime('%Y-%m', date) AS month,
-AVG(nav) AS avg_nav
+AVG(nav) avg_nav
 FROM nav_history
 GROUP BY month;
 
+-- 3 Transactions by State
+SELECT state,
+COUNT(*) transactions
+FROM investor_transactions
+GROUP BY state
+ORDER BY transactions DESC;
+
 -- 4 Expense Ratio < 1%
-SELECT *
-FROM performance
+SELECT scheme_name,
+expense_ratio_pct
+FROM scheme_performance
 WHERE expense_ratio_pct < 1;
 
--- 5 Transactions By State
-SELECT state,
-COUNT(*) AS transactions
-FROM transactions
-GROUP BY state;
-
--- 6 Total SIP Amount
-SELECT SUM(amount_inr)
-FROM transactions
-WHERE transaction_type='SIP';
-
--- 7 Top States By Investment
-SELECT state,
-SUM(amount_inr) total_amount
-FROM transactions
-GROUP BY state
-ORDER BY total_amount DESC
-LIMIT 5;
-
--- 8 Top 5 Funds By 5Y Return
+-- 5 Top Return Funds
 SELECT scheme_name,
 return_5yr_pct
-FROM performance
+FROM scheme_performance
 ORDER BY return_5yr_pct DESC
-LIMIT 5;
+LIMIT 10;
 
--- 9 Average Expense Ratio
-SELECT AVG(expense_ratio_pct)
-FROM performance;
+-- 6 Average Transaction Amount
+SELECT AVG(amount_inr)
+FROM investor_transactions;
 
--- 10 Total Transaction Volume
-SELECT COUNT(*)
-FROM transactions;
+-- 7 Transaction Type Distribution
+SELECT transaction_type,
+COUNT(*)
+FROM investor_transactions
+GROUP BY transaction_type;
+
+-- 8 Top States by Investment
+SELECT state,
+SUM(amount_inr)
+FROM investor_transactions
+GROUP BY state
+ORDER BY SUM(amount_inr) DESC;
+
+-- 9 Highest Alpha Funds
+SELECT scheme_name,
+alpha
+FROM scheme_performance
+ORDER BY alpha DESC
+LIMIT 10;
+
+-- 10 Highest Sharpe Ratio Funds
+SELECT scheme_name,
+sharpe_ratio
+FROM scheme_performance
+ORDER BY sharpe_ratio DESC
+LIMIT 10;

@@ -1,50 +1,46 @@
 CREATE TABLE dim_fund (
-    fund_id INTEGER PRIMARY KEY,
-    amfi_code INTEGER UNIQUE,
-    fund_name TEXT,
-    category TEXT,
-    fund_house TEXT
+    amfi_code INTEGER PRIMARY KEY,
+    scheme_name TEXT,
+    fund_house TEXT,
+    category TEXT
 );
 
 CREATE TABLE dim_date (
     date_id INTEGER PRIMARY KEY,
-    date TEXT UNIQUE,
-    year INTEGER,
-    month INTEGER,
-    quarter INTEGER
+    full_date DATE
 );
 
 CREATE TABLE fact_nav (
-    nav_id INTEGER PRIMARY KEY,
+    nav_id INTEGER PRIMARY KEY AUTOINCREMENT,
     amfi_code INTEGER,
-    date TEXT,
+    date DATE,
     nav REAL,
     FOREIGN KEY(amfi_code) REFERENCES dim_fund(amfi_code)
 );
 
 CREATE TABLE fact_transactions (
-    txn_id INTEGER PRIMARY KEY,
+    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    investor_id TEXT,
     amfi_code INTEGER,
-    transaction_date TEXT,
+    transaction_date DATE,
     transaction_type TEXT,
-    amount REAL,
-    state TEXT,
+    amount_inr REAL,
     FOREIGN KEY(amfi_code) REFERENCES dim_fund(amfi_code)
 );
 
 CREATE TABLE fact_performance (
-    perf_id INTEGER PRIMARY KEY,
+    performance_id INTEGER PRIMARY KEY AUTOINCREMENT,
     amfi_code INTEGER,
-    return_1y REAL,
-    return_3y REAL,
-    return_5y REAL,
-    expense_ratio REAL,
+    return_1yr_pct REAL,
+    return_3yr_pct REAL,
+    return_5yr_pct REAL,
+    expense_ratio_pct REAL,
     FOREIGN KEY(amfi_code) REFERENCES dim_fund(amfi_code)
 );
 
 CREATE TABLE fact_aum (
-    aum_id INTEGER PRIMARY KEY,
-    amfi_code INTEGER,
-    aum REAL,
-    FOREIGN KEY(amfi_code) REFERENCES dim_fund(amfi_code)
+    aum_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fund_house TEXT,
+    month TEXT,
+    aum_crore REAL
 );
